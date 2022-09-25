@@ -1,6 +1,7 @@
 package edu.miu.cs544.AnswerService.controller;
 
 import edu.miu.cs544.AnswerService.Exception.RecordNotFoundException;
+import edu.miu.cs544.AnswerService.dto.AnswerFeedbackResponseDTO;
 import edu.miu.cs544.AnswerService.dto.AnswerRequest;
 import edu.miu.cs544.AnswerService.dto.AnswerResponse;
 import edu.miu.cs544.AnswerService.dto.AnswerUpdateDto;
@@ -9,6 +10,7 @@ import edu.miu.cs544.AnswerService.repository.AnswerRepository;
 import edu.miu.cs544.AnswerService.service.AnswerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -26,10 +28,15 @@ public class AnswerController {
         return "Answer Created Successfully!!!";
     }
 
-    @GetMapping("/getallsolution")
-    public List<AnswerResponse> getAllAnswer(AnswerResponse answerResponse) {
-        return answerService.getAllAnswers(answerResponse);
+//    @GetMapping("/getallsolution")
+//    public List<AnswerResponse> getAllAnswer(AnswerResponse answerResponse) {
+//        return answerService.getAllAnswers(answerResponse);
+//    }
+    @GetMapping("getOne/{id}")
+    public List<AnswerFeedbackResponseDTO> getOne(@PathVariable Long id){
+        return answerService.getOne(id);
     }
+
 
     @PutMapping("/updateanswer/{id}")
     public String updateAnswer(@PathVariable Long id, @RequestBody AnswerUpdateDto answerUpdateDto) throws RecordNotFoundException {
@@ -42,6 +49,13 @@ public class AnswerController {
     public String deleteAnswer(@PathVariable Long id) throws RecordNotFoundException {
         answerService.deleteAnswer(id);
         return "Answer Deleted Successfully";
+    }
+
+    @DeleteMapping("/deleteanswers/{id}")
+    @Transactional
+    public String deleteAnswerByQuestionId(@PathVariable Long id) throws RecordNotFoundException {
+        answerService.deleteAnswersByQuestionId(id);
+        return "Answer Deleted Successfully for the given id";
     }
 }
 
